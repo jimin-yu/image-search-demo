@@ -17,4 +17,4 @@ class FeatureExtractor:
         x = np.expand_dims(x, axis=0)
         x = preprocess_input(x)
         feature = self.model.predict(x)[0]
-        return feature
+        return feature.reshape(-1, 1280)
