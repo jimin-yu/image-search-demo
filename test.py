@@ -3,6 +3,4 @@ from pathlib import Path
 
 fe = FeatureExtractor()
 
-img_path = Path('./tmp/dog.jpg')
-feature = fe.extract(img_path)
-print(feature[0])
+feature = fe.extract('tmp/cat.jpeg')
