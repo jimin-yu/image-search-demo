@@ -1,5 +1,6 @@
 from keras.models import Model
 from keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input
+import numpy as np
 import tensorflow as tf
 import keras.layers as layers
 
@@ -23,4 +24,20 @@ class FeatureExtractor:
     def extract(self, img_path):
         img = self.__preprocess(img_path)
         feature = self.model.predict(img)[0]
+        # normalized_feature = feature / np.linalg.norm(feature)
         return feature
+
+    # def extract_multi(self, img_paths):
+    #     list_ds = tf.data.Dataset.from_tensor_slices(imag_paths)
+    #     ds = list_ds.map(lambda x: preprocess(x, input_shape), num_parallel_calls=-1)
+    #     dataset = ds.batch(batch_size).prefetch(-1)
+
+    #     with open('fvecs.bin', 'wb') as f:
+    #         for batch in dataset:
+    #             fvecs = model.predict(batch)
+
+    #             fmt = f'{np.prod(fvecs.shape)}f'
+    #             f.write(struct.pack(fmt, *(fvecs.flatten())))
+
+    #     with open('fnames.txt', 'w') as f:
+    #         f.write('\n'.join(fnames))    

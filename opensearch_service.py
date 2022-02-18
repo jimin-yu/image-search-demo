@@ -43,7 +43,7 @@ class OpensearchService:
                 'properties': {
                     'img_vector': {
                         'type': 'knn_vector',
-                        'dimension': 4,
+                        'dimension': 1280,
                         'method':{
                             'name': 'hnsw',
                             'space_type': 'l2',
@@ -61,16 +61,27 @@ class OpensearchService:
         res = self.client.indices.create(self.index_name, body=self.index_body)
         print(res)
 
+
     def delete_index(self):
         res = self.client.indices.delete(self.index_name)
         print(res) 
+
+
+    def create_doc(self, doc):
+        res = self.client.index(index = self.index_name, body = doc) 
+        print(res)   
+
+
+    def delete_doc(self, id):
+        res = self.client.delete(index = self.index_name, id = id)
+        print(res)
 
 
     def bulk(self, doc_array):
         rows = [{'_index': self.index_name, '_source': doc} for doc in doc_array]
         helpers.bulk(self.client, rows)
 
-    
+
     def query(self, vector):
         # The plugin returns k amount of results for each shard (and each segment) 
         # and size amount of results for the entire query.
