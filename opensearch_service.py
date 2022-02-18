@@ -1,4 +1,5 @@
-from opensearchpy import OpenSearch
+import json
+from opensearchpy import OpenSearch, helpers
 import os
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -36,16 +37,18 @@ class OpensearchService:
                         'ef_construction' : 128,
                         'm' : 48
                     },
-                    'refresh_interval': -1,
-                    'translog.flush_threshold_size': '10gb',
-                    'number_of_replicas': 0
                 },
             },
             'mappings': {
                 'properties': {
-                    'fvec': {
+                    'img_vector': {
                         'type': 'knn_vector',
-                        'dimension': 1280
+                        'dimension': 4,
+                        'method':{
+                            'name': 'hnsw',
+                            'space_type': 'l2',
+                            'engine': 'nmslib'
+                        }
                     },
                     'url': {
                         'type': 'keyword'
@@ -53,7 +56,6 @@ class OpensearchService:
                 }
             }
         }
-
 
     def create_index(self): 
         res = self.client.indices.create(self.index_name, body=self.index_body)
@@ -64,12 +66,27 @@ class OpensearchService:
         print(res) 
 
 
-    def bulk(self, vectors):
-        print(2)
+    def bulk(self, doc_array):
+        rows = [{'_index': self.index_name, '_source': doc} for doc in doc_array]
+        helpers.bulk(self.client, rows)
 
     
     def query(self, vector):
-        print(3)   
+        # The plugin returns k amount of results for each shard (and each segment) 
+        # and size amount of results for the entire query.
+        body = {
+            "size": 2,
+            "query": {
+                "knn": {
+                    "img_vector": {
+                        "vector": vector,
+                        "k": 2
+                    }
+                }
+            }
+        }
+        res = self.client.search(request_timeout=30, index=self.index_name, body=body)
+        print(json.dumps(res, indent=2))
 
 
 

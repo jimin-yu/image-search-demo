@@ -37,8 +37,17 @@ from opensearch_service import OpensearchService
 
 opensearch_service = OpensearchService.instance()
 
-# opensearch_service.create_index()
-opensearch_service.delete_index()
+print(opensearch_service.client.indices.exists(index='img_search'))
+
+if(opensearch_service.client.indices.exists(index='img_search')):
+    opensearch_service.delete_index()
+opensearch_service.create_index()
+
+doc_array = [{'img_vector': [1,2,3,4], 'url': 'https://naver.com'}, 
+             {'img_vector':[5,3,7,8], 'url': 'https://google.com'},
+             {'img_vector': [2,3,4,5], 'url': 'https://youtube.com'}]
+opensearch_service.bulk(doc_array)
+opensearch_service.query([2, 3, 5, 6])
 
 
 
