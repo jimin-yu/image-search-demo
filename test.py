@@ -98,10 +98,17 @@
 # img_service.delete_img(img_path)
 
 
-import glob
-from feature_extractor import FeatureExtractor
-fe = FeatureExtractor()
+# import glob
+# from feature_extractor import FeatureExtractor
+# fe = FeatureExtractor()
 
-img_paths = glob.glob('tmp/**/*.jpeg', recursive=True)
-fe.extract_multi(img_paths)
+# img_paths = glob.glob('tmp/**/*.jpeg', recursive=True)
+# fe.extract_multi(img_paths)
+
+import urllib.parse
+
+def encode_uri_component(text):
+    return urllib.parse.quote(text.encode("utf-8"))
+
+print(encode_uri_component('후드티'))
 
