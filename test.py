@@ -68,31 +68,40 @@
 # os.unlink('tmp/pengsoo.jpeg')
 
 
+# from feature_extractor import FeatureExtractor
+# from image_service import ImageService
+# from opensearch_service import OpensearchService
+
+# fe = FeatureExtractor()
+# img_service = ImageService()
+# os_service = OpensearchService.instance()
+
+
+# # img_search 인덱스 생성
+# if(os_service.client.indices.exists(index='img_search')):
+#     os_service.delete_index()
+# os_service.create_index()
+
+# # 이미지 임시 폴더에 다운로드
+# url = 'https://upload.wikimedia.org/wikipedia/ko/d/d4/%ED%8E%AD%EC%88%98.jpg'
+# img_path = img_service.download_img(url)
+# print(img_path)
+
+# # 벡터 추출
+# feature = fe.extract(img_path)
+
+# # 인덱싱
+# document = {'img_vector': feature, 'url': url}
+# os_service.create_doc(document)
+
+# # 이미지 삭제
+# img_service.delete_img(img_path)
+
+
+import glob
 from feature_extractor import FeatureExtractor
-from image_service import ImageService
-from opensearch_service import OpensearchService
-
 fe = FeatureExtractor()
-img_service = ImageService()
-os_service = OpensearchService.instance()
 
+img_paths = glob.glob('tmp/**/*.jpeg', recursive=True)
+fe.extract_multi(img_paths)
 
-# img_search 인덱스 생성
-if(os_service.client.indices.exists(index='img_search')):
-    os_service.delete_index()
-os_service.create_index()
-
-# 이미지 임시 폴더에 다운로드
-url = 'https://upload.wikimedia.org/wikipedia/ko/d/d4/%ED%8E%AD%EC%88%98.jpg'
-img_path = img_service.download_img(url)
-print(img_path)
-
-# 벡터 추출
-feature = fe.extract(img_path)
-
-# 인덱싱
-document = {'img_vector': feature, 'url': url}
-os_service.create_doc(document)
-
-# 이미지 삭제
-img_service.delete_img(img_path)

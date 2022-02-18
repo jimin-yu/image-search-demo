@@ -17,27 +17,25 @@ class FeatureExtractor:
         img = tf.io.read_file(img_path)
         img = tf.image.decode_jpeg(img, channels=self.input_shape[2])
         img = tf.image.resize(img, self.input_shape[:2])
-        img = tf.expand_dims(img, axis=0)
         img = preprocess_input(img)
         return img  
 
     def extract(self, img_path):
         img = self.__preprocess(img_path)
+        img = tf.expand_dims(img, axis=0)
         feature = self.model.predict(img)[0]
         # normalized_feature = feature / np.linalg.norm(feature)
         return feature
 
-    # def extract_multi(self, img_paths):
-    #     list_ds = tf.data.Dataset.from_tensor_slices(imag_paths)
-    #     ds = list_ds.map(lambda x: preprocess(x, input_shape), num_parallel_calls=-1)
-    #     dataset = ds.batch(batch_size).prefetch(-1)
+    def extract_multi(self, img_paths):
+        batch_size = 100
+        features = []
+        list_ds = tf.data.Dataset.from_tensor_slices(img_paths)
+        ds = list_ds.map(lambda x: self.__preprocess(x), num_parallel_calls=-1)
+        dataset = ds.batch(batch_size).prefetch(-1)
 
-    #     with open('fvecs.bin', 'wb') as f:
-    #         for batch in dataset:
-    #             fvecs = model.predict(batch)
+        for batch in dataset:
+            x = self.model.predict(batch)
+            features.extend(x)
 
-    #             fmt = f'{np.prod(fvecs.shape)}f'
-    #             f.write(struct.pack(fmt, *(fvecs.flatten())))
-
-    #     with open('fnames.txt', 'w') as f:
-    #         f.write('\n'.join(fnames))    
+        return features
