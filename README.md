@@ -37,3 +37,7 @@ pip freeze > requirements.txt
 pip install -r requirements.txt
 ```
 
+### opensearch 인증서 복사
+```
+docker cp {opensearch-container-id}:/usr/share/opensearch/config/root-ca.pem ./security
+```

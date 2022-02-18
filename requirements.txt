@@ -4,6 +4,7 @@ cachetools==5.0.0
 certifi==2021.10.8
 charset-normalizer==2.0.12
 click==8.0.3
+elastic-transport==8.0.1
 Flask==2.0.3
 flatbuffers==2.0
 gast==0.5.3
@@ -24,6 +25,7 @@ Markdown==3.3.6
 MarkupSafe==2.0.1
 numpy==1.22.2
 oauthlib==3.2.0
+opensearch-py==1.0.0
 opt-einsum==3.3.0
 Pillow==9.0.1
 protobuf==3.19.4
