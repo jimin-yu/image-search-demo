@@ -58,6 +58,9 @@ class OpensearchService:
         }
 
     def create_index(self): 
+        if(self.client.indices.exists(index='img_search')):
+            self.delete_index()
+            
         res = self.client.indices.create(self.index_name, body=self.index_body)
         print(res)
 
