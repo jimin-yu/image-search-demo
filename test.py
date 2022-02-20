@@ -105,10 +105,8 @@
 # img_paths = glob.glob('tmp/**/*.jpeg', recursive=True)
 # fe.extract_multi(img_paths)
 
-import urllib.parse
-
-def encode_uri_component(text):
-    return urllib.parse.quote(text.encode("utf-8"))
-
-print(encode_uri_component('후드티'))
+from image_crawler import ImageCrawler
+crawler = ImageCrawler()
+x = crawler.crawl('후드티', 20)
+print(len(x))
 
