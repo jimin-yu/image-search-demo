@@ -10,7 +10,7 @@ from feature_extractor import FeatureExtractor
 
 crawler = ImageCrawler()
 img_service = ImageService()
-search_service = OpensearchService()
+search_service = OpensearchService.instance()
 fe = FeatureExtractor()
 
 

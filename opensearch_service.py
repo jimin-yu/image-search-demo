@@ -100,7 +100,8 @@ class OpensearchService:
             }
         }
         res = self.client.search(request_timeout=30, index=self.index_name, body=body)
-        print(json.dumps(res, indent=2))
+        urls = [ x['_source']['url'] for x in res['hits']['hits']]
+        print(urls)
 
 
 
