@@ -105,8 +105,37 @@
 # img_paths = glob.glob('tmp/**/*.jpeg', recursive=True)
 # fe.extract_multi(img_paths)
 
-from image_crawler import ImageCrawler
-crawler = ImageCrawler()
-x = crawler.crawl('후드티', 20)
-print(len(x))
+# from image_crawler import ImageCrawler
+# crawler = ImageCrawler()
+# x = crawler.crawl('후드티', 20)
+# print(len(x))
+
+# import asyncio
+
+# async def download_img(img_path):
+#     return img_path
+
+
+# async def main():
+#     task = asyncio.create_task(download_img('hello!'))
+
+#     res = await task
+#     print(res)
+
+#     print('end')
+
+
+# asyncio.run(main())
+
+
+from image_service import ImageService
+import asyncio
+img_svc = ImageService()
+
+url = 'http://economychosun.com/query/upload/322/20191103221129_fgyjnwts.jpg'
+asyncio.run(img_svc.download_img_async(url))
+
+
+
+
 
