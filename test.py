@@ -134,3 +134,4 @@
 
 # url = 'http://economychosun.com/query/upload/322/20191103221129_fgyjnwts.jpg'
 # asyncio.run(img_svc.download_img_async(url))
+
