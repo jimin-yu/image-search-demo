@@ -134,26 +134,3 @@
 
 # url = 'http://economychosun.com/query/upload/322/20191103221129_fgyjnwts.jpg'
 # asyncio.run(img_svc.download_img_async(url))
-
-
-
-
-import asyncio
-import time
-
-async def coro(x):
-    print(f'start {x}')
-    await asyncio.sleep(2)
-    print(f'finish {x}')
-    return x
-
-
-async def main():
-    start = time.time()
-    t1 = asyncio.create_task(coro(1))
-    t2 = asyncio.create_task(coro(2))
-    result = await asyncio.gather(t1, t2)
-    print(f'duration : {time.time() - start}')
-    print(result)
-
-asyncio.run(main())    
