@@ -27,6 +27,7 @@ class FeatureExtractor:
         # normalized_feature = feature / np.linalg.norm(feature)
         return feature
 
+    @tf.autograph.experimental.do_not_convert
     def extract_multi(self, img_paths):
         batch_size = 100
         features = []
