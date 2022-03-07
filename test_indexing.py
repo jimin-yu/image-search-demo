@@ -34,7 +34,7 @@ async def bulk(img_urls):
 def main():
     batch_size = 100
 
-    img_urls = crawler.crawl('원피스', 50)
+    img_urls = crawler.crawl('원피스', 100)
     search_service.create_index()
     
     print("indexing...")

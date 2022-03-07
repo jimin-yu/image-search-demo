@@ -9,7 +9,7 @@ img_service = ImageService()
 search_service = OpensearchService.instance()
 fe = FeatureExtractor()
 
-img_url = 'https://image.msscdn.net/images/goods_img/20150901/242972/242972_11_500.jpg'
+img_url = 'https://img.ssfshop.com/cmd/LB_500x660/src/https://img.ssfshop.com/goods/8SBR/22/02/08/GM0022020816455_1_ORGINL_20220211103711358.jpg'
 
 async def main():
     img_path = await img_service.download_img(img_url)
