@@ -1,7 +1,4 @@
-# url로 이미지 임시 다운로드 -> feature extract -> 쿼리
-
-## 수정 : extract(img_path) => extract(url) ..?
-
+import asyncio
 from image_crawler import ImageCrawler
 from image_service import ImageService
 from opensearch_service import OpensearchService
@@ -13,10 +10,15 @@ search_service = OpensearchService.instance()
 fe = FeatureExtractor()
 
 img_url = 'https://image.msscdn.net/images/goods_img/20150901/242972/242972_11_500.jpg'
-img_path = img_service.download_img(img_url)
 
-feature = fe.extract(img_path)
-img_service.delete_img(img_path)
+async def main():
+    img_path = await img_service.download_img(img_url)
+    feature = fe.extract(img_path)
+    img_service.delete_img(img_path)
+    search_service.query(feature)
 
-search_service.query(feature)
+asyncio.run(main())
+
+
+
 

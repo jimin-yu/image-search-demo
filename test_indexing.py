@@ -1,10 +1,4 @@
-# urls = 후드티 이미지 url 크롤링 
-# urls foreach |url| do
-#  이미지 다운로드 (tmp에 저장) -> feature extract -> 인덱싱 -> 이미지 삭제
-# end
-
 import asyncio
-import time
 from image_crawler import ImageCrawler
 from image_service import ImageService
 from opensearch_service import OpensearchService
@@ -16,38 +10,36 @@ search_service = OpensearchService.instance()
 fe = FeatureExtractor()
 
 
-img_urls = crawler.crawl('후드티', 3)
-
-search_service.create_index()
-
-start_time = time.time()
-
-tasks = []
-for url in img_urls:
-    # async
-    task = asyncio.create_task(img_service.download_img(url))
-    tasks.append(task)
-
-    img_path = img_service.download_img(url)
-
+# TODO: 에러 핸들링
+async def download_img_and_extract_feature(url):
+    img_path = await img_service.download_img(url)
     feature = fe.extract(img_path)
-
-    document = {'img_vector': feature, 'url': url}
-    # async
-    search_service.create_doc(document)
-
     img_service.delete_img(img_path)
-
-duration = time.time() - start_time
-print(f'sync took : {duration} sec')
+    return {'img_vector': feature, 'url': url}
 
 
-async def process_one_image(img_url):
-    img_path = await img_service.download_img(img_url)
+async def bulk(img_urls):
+    tasks = [ asyncio.create_task(download_img_and_extract_feature(url)) for url in img_urls ]
+    document_array = await asyncio.gather(*tasks, return_exceptions=True)
+    search_service.bulk(document_array)
 
-    feature = fe.extract(img_path)
 
-    print(img_path)
+def main():
+    img_urls = crawler.crawl('후드티', 3)
+    search_service.create_index()
+    asyncio.run(bulk(img_urls))
 
-url = 'http://economychosun.com/query/upload/322/20191103221129_fgyjnwts.jpg'
-asyncio.run(process_one_image(url))    
+main()
+
+
+
+
+
+
+ 
+
+
+
+
+
+  
