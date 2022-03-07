@@ -97,10 +97,13 @@ class OpensearchService:
                         "k": 2
                     }
                 }
+            },
+            "_source": {
+                "exclude": ["img_vector"]
             }
         }
         res = self.client.search(request_timeout=30, index=self.index_name, body=body)
-        urls = [ x['_source']['url'] for x in res['hits']['hits']]
+        urls = [ (x['_source']['url'], x['_score']) for x in res['hits']['hits']]
         print(urls)
 
 
