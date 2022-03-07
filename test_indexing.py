@@ -1,8 +1,10 @@
+import time
 import asyncio
 from image_crawler import ImageCrawler
 from image_service import ImageService
 from opensearch_service import OpensearchService
 from feature_extractor import FeatureExtractor
+from lib.each_slice import each_slice
 
 crawler = ImageCrawler()
 img_service = ImageService()
@@ -25,9 +27,19 @@ async def bulk(img_urls):
 
 
 def main():
-    img_urls = crawler.crawl('후드티', 3)
+    batch_size = 100
+
+    img_urls = crawler.crawl('후드티', 100)
     search_service.create_index()
-    asyncio.run(bulk(img_urls))
+    
+    print("|start| indexing...")
+    start = time.time()
+
+    for urls in each_slice(img_urls, batch_size):
+        asyncio.run(bulk(urls))
+
+    print(f'|fin| batch-size : {batch_size}, time : {time.time() - start}')
+
 
 main()
 
@@ -36,7 +48,7 @@ main()
 
 
 
- 
+
 
 
 
