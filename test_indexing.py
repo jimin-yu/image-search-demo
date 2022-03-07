@@ -13,33 +13,37 @@ fe = FeatureExtractor()
 
 
 # TODO: 에러 핸들링
-async def download_img_and_extract_feature(url):
-    img_path = await img_service.download_img(url)
-    feature = fe.extract(img_path)
-    img_service.delete_img(img_path)
-    return {'img_vector': feature, 'url': url}
-
 
 async def bulk(img_urls):
-    tasks = [ asyncio.create_task(download_img_and_extract_feature(url)) for url in img_urls ]
-    document_array = await asyncio.gather(*tasks, return_exceptions=True)
+    # 이미지 다운로드
+    tasks = [ asyncio.create_task(img_service.download_img(url)) for url in img_urls ]
+    img_paths = await asyncio.gather(*tasks, return_exceptions=True)
+    
+    # feature 추출
+    features = fe.extract_multi(img_paths)
+
+    # 이미지 삭제
+    for path in img_paths:
+        img_service.delete_img(path)
+
+    # bulk 인덱싱
+    document_array = [ {'img_vector': feature, 'url': url} for feature, url in zip(features, img_urls) ]
     search_service.bulk(document_array)
 
 
 def main():
     batch_size = 100
 
-    img_urls = crawler.crawl('후드티', 100)
+    img_urls = crawler.crawl('원피스', 50)
     search_service.create_index()
     
-    print("|start| indexing...")
+    print("indexing...")
     start = time.time()
 
     for urls in each_slice(img_urls, batch_size):
         asyncio.run(bulk(urls))
 
-    print(f'|fin| batch-size : {batch_size}, time : {time.time() - start}')
-
+    print(f'time : {time.time() - start}')
 
 main()
 

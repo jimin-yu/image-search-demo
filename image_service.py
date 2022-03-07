@@ -16,13 +16,11 @@ class ImageService:
         return image_path                    
                       
 
-
     def delete_img(self, image_path):
-        os.unlink(image_path)    
+        os.remove(image_path)    
 
-    
 
-    
+
 
 
 
